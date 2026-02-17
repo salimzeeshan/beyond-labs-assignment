@@ -71,7 +71,14 @@ export default function Home() {
         <option value="Designer">Designer</option>
         <option value="Manager">Manager</option>
       </select>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "5px",
+          cursor: "pointer",
+        }}
+      >
         <input
           type="checkbox"
           onChange={(e) =>
@@ -79,7 +86,14 @@ export default function Home() {
           }
           checked={formData.tAndC}
         ></input>
-        <label>Accept Terms & Conditions</label>
+        <label
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={(e) => setFormData({ ...formData, tAndC: !formData.tAndC })}
+        >
+          Accept Terms & Conditions
+        </label>
       </div>
       <input
         onClick={(e) => {
