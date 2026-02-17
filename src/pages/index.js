@@ -58,12 +58,12 @@ export default function Home() {
         }}
       >
         <h2>Form submitted successfully!</h2>
-        <ui>
-          <ul>Full Name: {formData.fullName}</ul>
-          <ul>Email: {formData.email}</ul>
-          <ul>Role: {formData.role}</ul>
-          <ul>Terms and Conditions: {formData.tAndC ? "Yes" : "No"}</ul>
-        </ui>
+        <ul>
+          <li>Full Name: {formData.fullName}</li>
+          <li>Email: {formData.email}</li>
+          <li>Role: {formData.role}</li>
+          <li>Terms and Conditions: {formData.tAndC ? "Yes" : "No"}</li>
+        </ul>
       </div>
     );
   }
