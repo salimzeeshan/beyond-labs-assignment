@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -9,6 +9,33 @@ export default function Home() {
   });
   const [formStep, setFormStep] = useState(0);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [formFields, setFormFields] = useState([
+    [
+      {
+        placeholder: "Full name",
+        type: "text",
+        value: "fullName",
+      },
+      {
+        placeholder: "Email address",
+        type: "text",
+        value: "email",
+      },
+    ],
+    [
+      {
+        placeholder: "Select role",
+        type: "select",
+        value: "role",
+        options: ["Select role", "Developer", "Designer", "Manager"],
+      },
+      {
+        placeholder: "Accept Terms & Conditions",
+        type: "checkbox",
+        value: "tAndC",
+      },
+    ],
+  ]);
 
   function handleNextButton(e) {
     e.preventDefault();
@@ -21,8 +48,16 @@ export default function Home() {
 
   if (isFormSubmitted) {
     return (
-      <div>
-        <h1>Form submitted successfully!</h1>
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+          textAlign:'center'
+        }}
+      >
+        <h2>Form submitted successfully!</h2>
         <ui>
           <ul>Full Name: {formData.fullName}</ul>
           <ul>Email: {formData.email}</ul>
@@ -33,82 +68,103 @@ export default function Home() {
     );
   }
 
-  if (formStep === 0) {
-    return (
-      <form>
+  return (
+    <form>
+      {formFields[formStep].map((field) => {
+        if (field.type === "text") {
+          return (
+            <input
+              key={field.value}
+              type="text"
+              placeholder={field.placeholder}
+              onChange={(e) =>
+                setFormData({ ...formData, [field.value]: e.target.value })
+              }
+              value={formData[field.value]}
+            ></input>
+          );
+        }
+        if (field.type === "select") {
+          return (
+            <select
+              key={field.value}
+              onChange={(e) =>
+                setFormData({ ...formData, [field.value]: e.target.value })
+              }
+              value={formData[field.value]}
+            >
+              {field.options.map((option) => (
+                <option
+                  key={option}
+                  value={option === "Select role" ? "" : option}
+                >
+                  {option}
+                </option>
+              ))}
+            </select>
+          );
+        }
+        if (field.type === "checkbox") {
+          return (
+            <div
+              key={field.value}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                type="checkbox"
+                onChange={(e) =>
+                  setFormData({ ...formData, [field.value]: e.target.checked })
+                }
+                checked={formData[field.value]}
+              ></input>
+              <label
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={(e) =>
+                  setFormData({
+                    ...formData,
+                    [field.value]: !formData[field.value],
+                  })
+                }
+              >
+                {field.placeholder}
+              </label>
+            </div>
+          );
+        }
+      })}
+
+      {formStep === 1 && (
         <input
-          onChange={(e) =>
-            setFormData({ ...formData, fullName: e.target.value })
-          }
-          type="text"
-          placeholder="Full name"
-          value={formData.fullName}
+          onClick={(e) => {
+            e.preventDefault();
+            setFormStep(0);
+          }}
+          type="submit"
+          value="Back"
         ></input>
-        <input
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          type="text"
-          placeholder="Email address"
-          value={formData.email}
-        ></input>
+      )}
+      {formStep === 0 ? (
         <input
           onClick={(e) => handleNextButton(e)}
           disabled={!formData.email || !formData.fullName}
           type="submit"
           value="Next"
         ></input>
-      </form>
-    );
-  }
-
-  return (
-    <form>
-      <select
-        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-        value={formData.role}
-      >
-        <option value="">Select role</option>
-        <option value="Developer">Developer</option>
-        <option value="Designer">Designer</option>
-        <option value="Manager">Manager</option>
-      </select>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "5px",
-          cursor: "pointer",
-        }}
-      >
+      ) : (
         <input
-          type="checkbox"
-          onChange={(e) =>
-            setFormData({ ...formData, tAndC: e.target.checked })
-          }
-          checked={formData.tAndC}
+          onClick={handleSubmitButton}
+          disabled={!formData.role || !formData.tAndC}
+          type="submit"
+          value="Submit"
         ></input>
-        <label
-          style={{
-            cursor: "pointer",
-          }}
-          onClick={(e) => setFormData({ ...formData, tAndC: !formData.tAndC })}
-        >
-          Accept Terms & Conditions
-        </label>
-      </div>
-      <input
-        onClick={(e) => {
-          e.preventDefault();
-          setFormStep(0);
-        }}
-        type="submit"
-        value="Back"
-      ></input>
-      <input
-        onClick={handleSubmitButton}
-        disabled={!formData.role || !formData.tAndC}
-        type="submit"
-        value="Submit"
-      ></input>
+      )}
     </form>
   );
 }
