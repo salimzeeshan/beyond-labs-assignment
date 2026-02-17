@@ -1,4 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+const formFields = [
+  [
+    {
+      placeholder: "Full name",
+      type: "text",
+      value: "fullName",
+    },
+    {
+      placeholder: "Email address",
+      type: "email",
+      value: "email",
+    },
+  ],
+  [
+    {
+      placeholder: "Select role",
+      type: "select",
+      value: "role",
+      options: ["Select role", "Developer", "Designer", "Manager"],
+    },
+    {
+      placeholder: "Accept Terms & Conditions",
+      type: "checkbox",
+      value: "tAndC",
+    },
+  ],
+];
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -9,33 +37,6 @@ export default function Home() {
   });
   const [formStep, setFormStep] = useState(0);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [formFields, setFormFields] = useState([
-    [
-      {
-        placeholder: "Full name",
-        type: "text",
-        value: "fullName",
-      },
-      {
-        placeholder: "Email address",
-        type: "text",
-        value: "email",
-      },
-    ],
-    [
-      {
-        placeholder: "Select role",
-        type: "select",
-        value: "role",
-        options: ["Select role", "Developer", "Designer", "Manager"],
-      },
-      {
-        placeholder: "Accept Terms & Conditions",
-        type: "checkbox",
-        value: "tAndC",
-      },
-    ],
-  ]);
 
   function handleNextButton(e) {
     e.preventDefault();
@@ -54,11 +55,11 @@ export default function Home() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%,-50%)",
-          textAlign:'center'
+          textAlign: "center",
         }}
       >
         <h2>Form submitted successfully!</h2>
-        <ul>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
           <li>Full Name: {formData.fullName}</li>
           <li>Email: {formData.email}</li>
           <li>Role: {formData.role}</li>
@@ -69,13 +70,21 @@ export default function Home() {
   }
 
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        if (formStep === 0) {
+          handleNextButton(e);
+        } else {
+          handleSubmitButton();
+        }
+      }}
+    >
       {formFields[formStep].map((field) => {
-        if (field.type === "text") {
+        if (field.type === "text" || field.type === "email") {
           return (
             <input
               key={field.value}
-              type="text"
+              type={field.type}
               placeholder={field.placeholder}
               onChange={(e) =>
                 setFormData({ ...formData, [field.value]: e.target.value })
@@ -152,14 +161,12 @@ export default function Home() {
       )}
       {formStep === 0 ? (
         <input
-          onClick={(e) => handleNextButton(e)}
           disabled={!formData.email || !formData.fullName}
           type="submit"
           value="Next"
         ></input>
       ) : (
         <input
-          onClick={handleSubmitButton}
           disabled={!formData.role || !formData.tAndC}
           type="submit"
           value="Submit"
